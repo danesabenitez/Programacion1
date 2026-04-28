@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machete – Programación I | UTN FRR</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Sora:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --card: #1a1e2a;
+    --border: #252a38;
+    --accent: #00c9a7;
+    --accent2: #7b61ff;
+    --accent3: #ff6b6b;
+    --accent4: #ffd166;
+    --text: #e8eaf0;
+    --muted: #7a8099;
+    --code-bg: #0a0c12;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,15,20,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    height: 52px;
+  }
+  nav::-webkit-scrollbar { display: none; }
+
+  .nav-logo {
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--accent);
+    white-space: nowrap;
+    margin-right: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-btn {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-family: 'Sora', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .nav-btn:hover { color: var(--text); border-color: var(--border); }
+  .nav-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(0,201,167,0.08); }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* SECTIONS */
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title span { font-size: 1.4rem; }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 0.7rem;
+  }
+  .card-title.purple { color: var(--accent2); }
+  .card-title.red { color: var(--accent3); }
+  .card-title.yellow { color: var(--accent4); }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* DEF BOX */
+  .def {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.7rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+  .def.purple { border-color: var(--accent2); }
+  .def.red { border-color: var(--accent3); }
+  .def.yellow { border-color: var(--accent4); }
+  .def strong { color: var(--accent); }
+  .def.purple strong { color: var(--accent2); }
+  .def.red strong { color: var(--accent3); }
+  .def.yellow strong { color: var(--accent4); }
+
+  /* CODE */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+    color: #c9d1d9;
+  }
+  .kw { color: #ff79c6; }
+  .fn { color: #50fa7b; }
+  .str { color: #f1fa8c; }
+  .num { color: #bd93f9; }
+  .cm { color: #6272a4; }
+  .type { color: #8be9fd; }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin: 0.4rem 0;
+  }
+  th {
+    background: rgba(0,201,167,0.1);
+    color: var(--accent);
+    font-weight: 700;
+    text-align: left;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  th.purple { background: rgba(123,97,255,0.1); color: var(--accent2); }
+  th.yellow { background: rgba(255,209,102,0.1); color: var(--accent4); }
+  th.red { background: rgba(255,107,107,0.1); color: var(--accent3); }
+  td {
+    padding: 0.45rem 0.7rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1em 0.4em;
+    font-size: 0.82em;
+    color: var(--accent4);
+  }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 99px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 0.4rem;
+  }
+  .badge-green { background: rgba(0,201,167,0.15); color: var(--accent); }
+  .badge-red { background: rgba(255,107,107,0.15); color: var(--accent3); }
+  .badge-yellow { background: rgba(255,209,102,0.15); color: var(--accent4); }
+
+  /* WARN BOX */
+  .warn {
+    background: rgba(255,107,107,0.07);
+    border: 1px solid rgba(255,107,107,0.25);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    margin: 0.5rem 0;
+    color: #ffb3b3;
+  }
+  .warn::before { content: "⚠ "; font-weight: 700; }
+
+  .tip {
+    background: rgba(0,201,167,0.06);
+    border: 1px solid rgba(0,201,167,0.2);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    margin: 0.5rem 0;
+    color: #a0f0e0;
+  }
+  .tip::before { content: "💡 "; }
+
+  p { font-size: 0.88rem; line-height: 1.6; margin-bottom: 0.5rem; }
+  ul { font-size: 0.85rem; line-height: 1.8; padding-left: 1.2rem; }
+  li { margin-bottom: 0.1rem; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.2rem 0; }
+
+  .highlight { color: var(--accent4); font-weight: 700; }
+  .highlight-green { color: var(--accent); font-weight: 700; }
+  .highlight-purple { color: var(--accent2); font-weight: 700; }
+  .highlight-red { color: var(--accent3); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">⚡ MACHETE P1</div>
+  <button class="nav-btn active" onclick="show('u1')">Unidad 1</button>
+  <button class="nav-btn" onclick="show('u2')">Unidad 2</button>
+  <button class="nav-btn" onclick="show('u3')">Unidad 3</button>
+  <button class="nav-btn" onclick="show('sintaxis')">Sintaxis C</button>
+  <button class="nav-btn" onclick="show('tablas')">Tablas Rápidas</button>
+  <button class="nav-btn" onclick="show('ejemplos')">💻 Ejemplos</button>
+</nav>
+
+<div class="container">
+
+<!-- ===================== UNIDAD 1 ===================== -->
+<div class="section active" id="u1">
+  <div class="section-title"><span>📖</span> Unidad 1 — Conceptos Fundamentales</div>
+
+  <div class="card">
+    <div class="card-title">Definiciones clave</div>
+    <div class="def"><strong>Programación:</strong> Elaboración de programas para la resolución de problemas mediante computadoras.</div>
+    <div class="def"><strong>Algoritmo:</strong> Secuencia <em>finita, ordenada y no ambigua</em> de instrucciones para resolver un problema.</div>
+    <div class="def"><strong>Programa:</strong> Colección de instrucciones que, al ser ejecutadas por el CPU, llevan a cabo una tarea.</div>
+    <div class="def"><strong>Lenguaje de Programación:</strong> Conjunto de reglas y convenciones para escribir programas que la computadora puede ejecutar.</div>
+    <div class="def purple"><strong>Sintaxis:</strong> CÓMO se escribe (reglas de estructura). — <strong>Semántica:</strong> QUÉ hace (significado). Un prog. sintácticamente correcto puede ser semánticamente incorrecto.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Compilador vs Intérprete</div>
+      <table>
+        <tr><th></th><th>Compilador</th><th>Intérprete</th></tr>
+        <tr><td>¿Qué hace?</td><td>Traduce TODO antes de ejecutar</td><td>Ejecuta línea a línea</td></tr>
+        <tr><td>Velocidad ejec.</td><td>Más rápida</td><td>Más lenta</td></tr>
+        <tr><td>Errores</td><td>No ejecuta si hay errores</td><td>Ejecuta hasta el error</td></tr>
+      </table>
+      <p style="margin-top:0.5rem;font-size:0.78rem;color:var(--muted)">C usa <strong style="color:var(--accent)">compilador</strong>.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Tipos de lenguaje</div>
+      <table>
+        <tr><th>Tipo</th><th>Ejemplos</th></tr>
+        <tr><td>Máquina (binario)</td><td>0 y 1</td></tr>
+        <tr><td>Ensamblador</td><td>Assembly</td></tr>
+        <tr><td>Alto nivel</td><td><strong>C</strong>, Java, Python</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pasos para resolver un problema</div>
+    <table>
+      <tr><th>#</th><th>Etapa</th><th>Descripción</th></tr>
+      <tr><td>1</td><td>Análisis</td><td>Entrada / Proceso / Salida (HIPO)</td></tr>
+      <tr><td>2</td><td>Especificación</td><td>Definición precisa del problema</td></tr>
+      <tr><td>3</td><td>Diseño del algoritmo</td><td>Elegir solución y escribir el algoritmo</td></tr>
+      <tr><td>4</td><td>Codificación</td><td>Implementar en lenguaje de programación</td></tr>
+      <tr><td>5</td><td>Compilación</td><td>Traducir a lenguaje máquina</td></tr>
+      <tr><td>6</td><td>Verificación</td><td>Comprobar que cumple la especificación</td></tr>
+      <tr><td>7</td><td>Depuración</td><td>Buscar y corregir errores</td></tr>
+      <tr><td>8</td><td>Documentación</td><td>Comentarios que faciliten la comprensión</td></tr>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title yellow">Técnica HIPO</div>
+      <div class="def yellow">Hierarchy + Input Process Output — todo programa tiene 3 bloques:</div>
+      <table>
+        <tr><th class="yellow">ENTRADA</th><th class="yellow">PROCESO</th><th class="yellow">SALIDA</th></tr>
+        <tr><td>Datos disponibles</td><td>Operaciones a aplicar</td><td>Información a obtener</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title purple">Refinamiento Sucesivo (Top-Down)</div>
+      <p>Describir el proceso de forma general y luego detallarlo progresivamente.</p>
+      <div class="def purple">
+        R1: Calcular promedio<br>
+        R2: Leer / Sumar / Dividir / Mostrar<br>
+        R3: leer a,b,c → suma=a+b+c → prom=suma/3 → mostrar prom
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title red">Prueba de Escritorio</div>
+    <p>Verificación <strong>manual y lógica</strong> de un algoritmo sin ejecutarlo en computadora. Permite detectar:</p>
+    <ul>
+      <li>Pasos fuera de orden</li>
+      <li>Pasos faltantes o de más</li>
+      <li>Bucles que se repiten más o menos veces de lo debido</li>
+    </ul>
+    <div class="tip">Pasos: identificar código → analizar lógica → elegir valores de entrada → calcular manualmente → comparar resultados esperados vs reales → corregir → repetir con otros valores.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Paradigmas de programación</div>
+    <div class="grid-2">
+      <div>
+        <div class="def"><strong>Estructurada:</strong> Secuencialidad + Selección (if/switch) + Iteración (for/while)</div>
+      </div>
+      <div>
+        <div class="def purple"><strong>OOP:</strong> Organiza el código en objetos que encapsulan datos y comportamientos. (Java, C++, Python)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Proceso, Estado y Acciones</div>
+    <table>
+      <tr><th>Concepto</th><th>Definición</th></tr>
+      <tr><td>Proceso</td><td>Conjunto ordenado de acciones que transforman un estado inicial en uno final</td></tr>
+      <tr><td>Acción</td><td>Acontecimiento con resultado bien definido que produce un cambio en el sistema</td></tr>
+      <tr><td>Estado Inicial (T₀)</td><td>Situación antes de comenzar el proceso</td></tr>
+      <tr><td>Estados Intermedios</td><td>Resultados de acciones ejecutadas entre inicio y fin</td></tr>
+      <tr><td>Estado Final (Tf)</td><td>Situación cuando el proceso termina</td></tr>
+    </table>
+    <div class="tip" style="margin-top:0.7rem">Composición secuencial: acciones en orden (una termina → comienza la siguiente). Composición paralela: dos o más al mismo tiempo.</div>
+  </div>
+</div>
+
+
+<!-- ===================== UNIDAD 2 ===================== -->
+<div class="section" id="u2">
+  <div class="section-title"><span>🗂</span> Unidad 2 — Estructuras de Datos</div>
+
+  <div class="card">
+    <div class="card-title">Definición</div>
+    <div class="def"><strong>Estructura de datos:</strong> Forma de organizar y almacenar datos de manera que puedan ser utilizados eficientemente. Permite diseñar la solución correcta para un determinado problema.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Clasificación general</div>
+    <div class="grid-2">
+      <div>
+        <div class="def"><strong>Estáticas:</strong> El tamaño en memoria se define ANTES de ejecutar el programa y NO puede modificarse durante la ejecución.</div>
+        <ul style="margin-top:0.4rem">
+          <li><strong>Primitivas:</strong> Entero, Real, Booleano, Carácter</li>
+          <li><strong>Compuestas:</strong> Arreglos, Strings, Archivos, Registros</li>
+        </ul>
+      </div>
+      <div>
+        <div class="def purple"><strong>Dinámicas:</strong> El tamaño en memoria PUEDE modificarse durante la ejecución del programa.</div>
+        <ul style="margin-top:0.4rem">
+          <li><strong>Lineales:</strong> Listas, Pilas, Colas</li>
+          <li><strong>No lineales:</strong> Árboles, Grafos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Tipos primitivos de datos</div>
+    <table>
+      <tr><th>Tipo</th><th>En C</th><th>Dominio</th><th>Tamaño típico</th></tr>
+      <tr><td>Entero</td><td><code>int</code></td><td>Números enteros (sin decimales)</td><td>4 bytes</td></tr>
+      <tr><td>Real</td><td><code>float</code> / <code>double</code></td><td>Números con decimales</td><td>4 / 8 bytes</td></tr>
+      <tr><td>Carácter</td><td><code>char</code></td><td>Un símbolo del alfabeto</td><td>1 byte</td></tr>
+      <tr><td>Booleano</td><td><code>int</code> (0/1 en C)</td><td>Verdadero (1) o Falso (0)</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Arreglos</div>
+      <div class="def"><strong>Arreglo:</strong> Colección <em>finita, homogénea y ordenada</em> de elementos del mismo tipo. Es una estructura estática compuesta.</div>
+      <p style="font-size:0.78rem;color:var(--muted)">Finita = tiene tamaño definido | Homogénea = todos del mismo tipo | Ordenada = cada elemento tiene posición (índice)</p>
+    </div>
+    <div class="card">
+      <div class="card-title">Strings (Cadenas)</div>
+      <div class="def"><strong>String:</strong> Secuencia ordenada de longitud finita de caracteres. Puede contener letras (a-z, A-Z), números (0-9), espacios y símbolos (!,@,%…)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Archivo o Fichero</div>
+    <div class="def yellow"><strong>Archivo:</strong> Colección ordenada de datos relacionados que se almacenan de forma <em>permanente</em> en memoria no volátil (disco). A diferencia de la RAM, los datos sobreviven al apagado del equipo.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title purple">Estructuras Dinámicas Lineales</div>
+    <p>Cada elemento tiene <strong>un único sucesor y un único predecesor</strong>. Sus elementos están ubicados uno al lado del otro en forma lineal.</p>
+    <hr class="divider">
+    <div class="grid-2">
+      <div>
+        <div class="def purple"><strong>PILA (Stack)</strong> — LIFO<br><em>Last In, First Out</em> = último en entrar, primero en salir.<br><br>Operaciones: <code>push</code> (apilar) y <code>pop</code> (desapilar). Se trabaja siempre por el TOPE.</div>
+      </div>
+      <div>
+        <div class="def"><strong>COLA (Queue)</strong> — FIFO<br><em>First In, First Out</em> = primero en entrar, primero en salir.<br><br>Operaciones: <code>encolar</code> y <code>desencolar</code>. Entra por el FINAL, sale por la CABECERA.</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="def red"><strong>LISTA ENLAZADA:</strong> Cada elemento (nodo) contiene un dato y un enlace a la posición del siguiente elemento. Teniendo la referencia del inicio se accede a todos los elementos.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title red">Estructuras Dinámicas NO Lineales</div>
+    <p>Cada elemento puede estar enlazado a CUALQUIER otro componente (varios sucesores o varios predecesores).</p>
+    <div class="grid-2">
+      <div class="def red"><strong>ÁRBOL:</strong> Estructura jerárquica. Cada elemento tiene un único ANTECESOR y puede tener varios SUCESORES.<br><br><em>Árbol binario:</em> máximo 2 nodos por elemento.</div>
+      <div class="def yellow"><strong>GRAFO:</strong> Estructura matemática con nodos (vértices) y líneas que los unen (aristas/arcos). Sin restricciones de jerarquía.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Operadores — Resumen</div>
+    <div class="grid-2">
+      <div>
+        <div class="card-title" style="font-size:0.7rem;margin-bottom:0.4rem">Aritméticos</div>
+        <table>
+          <tr><th>Op.</th><th>Descripción</th></tr>
+          <tr><td><code>+</code></td><td>Suma</td></tr>
+          <tr><td><code>-</code></td><td>Resta</td></tr>
+          <tr><td><code>*</code></td><td>Producto</td></tr>
+          <tr><td><code>/</code></td><td>División</td></tr>
+          <tr><td><code>%</code></td><td>Resto división entera</td></tr>
+          <tr><td><code>++</code></td><td>Incremento en 1</td></tr>
+          <tr><td><code>--</code></td><td>Decremento en 1</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="card-title" style="font-size:0.7rem;margin-bottom:0.4rem">Relacionales</div>
+        <table>
+          <tr><th>Op.</th><th>Descripción</th></tr>
+          <tr><td><code>></code></td><td>Mayor que</td></tr>
+          <tr><td><code>>=</code></td><td>Mayor o igual</td></tr>
+          <tr><td><code>&lt;</code></td><td>Menor que</td></tr>
+          <tr><td><code>&lt;=</code></td><td>Menor o igual</td></tr>
+          <tr><td><code>==</code></td><td>Igual (comparación)</td></tr>
+          <tr><td><code>!=</code></td><td>Diferente</td></tr>
+        </table>
+        <div class="warn" style="margin-top:0.5rem;font-size:0.75rem"><code>==</code> compara. <code>=</code> asigna. ¡No confundir!</div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="card-title" style="font-size:0.7rem;margin-bottom:0.4rem">Lógicos</div>
+    <table>
+      <tr><th>Op.</th><th>Nombre</th><th>Descripción</th></tr>
+      <tr><td><code>!</code></td><td>NOT</td><td>Niega el valor. Verdadero→Falso y viceversa.</td></tr>
+      <tr><td><code>&&</code></td><td>AND</td><td>Verdadero solo si AMBAS condiciones son verdaderas</td></tr>
+      <tr><td><code>||</code></td><td>OR</td><td>Verdadero si AL MENOS UNA condición es verdadera</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ===================== UNIDAD 3 ===================== -->
+<div class="section" id="u3">
+  <div class="section-title"><span>🔀</span> Unidad 3 — Sentencias de Control</div>
+
+  <div class="card">
+    <div class="card-title">Programación Estructurada — Teorema de Dijkstra</div>
+    <p>Todo programa puede escribirse usando únicamente <strong>3 estructuras de control</strong>:</p>
+    <div class="grid-2" style="margin-top:0.7rem">
+      <div class="def"><strong>Secuencia:</strong> instrucciones una tras otra, sin bifurcaciones.</div>
+      <div class="def yellow"><strong>Selección:</strong> una u otra rama según condición. → <code>if</code> / <code>switch</code></div>
+    </div>
+    <div class="def purple"><strong>Iteración:</strong> repite instrucciones mientras la condición se cumpla. → <code>while</code> / <code>for</code> / <code>do-while</code></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IF Simple</div>
+    <p>Ejecuta instrucciones <strong>solo si la condición es verdadera</strong>. Si es falsa, el bloque se omite.</p>
+    <pre><span class="kw">if</span> (condicion)
+{
+    sentencia1;
+    sentencia2;
+}</pre>
+    <div class="warn">Sin llaves, solo la PRIMERA instrucción pertenece al if.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IF–ELSE (doble)</div>
+    <p>Siempre ejecuta <strong>una de las dos ramas</strong>: la del if (verdadero) o la del else (falso).</p>
+    <pre><span class="kw">if</span> (condicion)
+{
+    <span class="cm">/* verdadero */</span>
+    sentencia1;
+}
+<span class="kw">else</span>
+{
+    <span class="cm">/* falso */</span>
+    sentencia2;
+}</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IF Anidado (else if)</div>
+    <p>Múltiples alternativas encadenadas.</p>
+    <pre><span class="kw">if</span> (condicion1)
+    instruccion1;
+<span class="kw">else if</span> (condicion2)
+    instruccion2;
+<span class="kw">else if</span> (condicion3)
+    instruccion3;
+<span class="kw">else</span>
+    instruccion4;   <span class="cm">// ninguna de las anteriores</span></pre>
+    <div class="tip">Ejemplo saludo: <code>if(hora&lt;12) "Buenos días" else if(hora&lt;18) "Buenas tardes" else "Buenas noches"</code></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title yellow">SWITCH — Selección múltiple</div>
+    <p>Compara el valor de una variable contra distintas constantes. Útil para reemplazar IF–ELSE IF largo.</p>
+    <pre><span class="kw">switch</span> (selector)
+{
+    <span class="kw">case</span> <span class="num">1</span>:
+        instrucciones;
+        <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">2</span>:
+        instrucciones;
+        <span class="kw">break</span>;
+    <span class="kw">default</span>:
+        instrucciones;
+        <span class="kw">break</span>;
+}</pre>
+    <table style="margin-top:0.7rem">
+      <tr><th class="yellow">Regla</th><th class="yellow">Detalle</th></tr>
+      <tr><td>Tipo del selector</td><td>Solo <code>int</code> o <code>char</code>. NO <code>float</code> ni <code>double</code>.</td></tr>
+      <tr><td>Valores de case</td><td>Deben ser CONSTANTES (no variables)</td></tr>
+      <tr><td><code>break</code></td><td>OBLIGATORIO al final de cada case. Sin él, cae al siguiente case ("fall-through")</td></tr>
+      <tr><td><code>default</code></td><td>Opcional. Se ejecuta cuando ningún case coincide.</td></tr>
+      <tr><td>Comparación</td><td>Solo igualdad. Para rangos (>, &lt;) usar IF.</td></tr>
+    </table>
+    <div class="warn">Para <code>char</code> usar comillas simples: <code>case 'a':</code></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">FOR — Repeticiones conocidas</div>
+    <p>Usar cuando se sabe de antemano cuántas veces repetir. Automatiza inicialización + condición + actualización.</p>
+    <pre><span class="kw">for</span> (inicializacion ; condicion ; actualizacion)
+{
+    instruccion1;
+    instruccion2;
+}</pre>
+    <table style="margin-top:0.5rem">
+      <tr><th>Parte</th><th>Cuándo se ejecuta</th><th>Ejemplo</th></tr>
+      <tr><td>Inicialización</td><td>UNA SOLA VEZ antes del bucle</td><td><code>i = 0</code></td></tr>
+      <tr><td>Condición</td><td>ANTES de cada iteración</td><td><code>i &lt; 10</code></td></tr>
+      <tr><td>Actualización</td><td>DESPUÉS de cada iteración</td><td><code>i++</code></td></tr>
+    </table>
+    <pre style="margin-top:0.7rem"><span class="cm">// Imprimir 0 al 9</span>
+<span class="kw">for</span> (i = <span class="num">0</span>; i &lt; <span class="num">10</span>; i++)
+    <span class="fn">printf</span>(<span class="str">"%d\n"</span>, i);
+<span class="cm">// Al salir, i vale 10 (condición de salida)</span></pre>
+    <pre><span class="cm">// Números pares de 50 a 20 (decremento)</span>
+<span class="kw">for</span> (i = <span class="num">50</span>; i >= <span class="num">20</span>; i -= <span class="num">2</span>)
+    <span class="fn">printf</span>(<span class="str">"%d\n"</span>, i);</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title purple">WHILE — Condición desconocida</div>
+    <p>Evalúa condición <strong>ANTES</strong> de ejecutar. Si es falsa desde el principio, el cuerpo NUNCA se ejecuta.</p>
+    <pre><span class="kw">while</span> (condicion)
+{
+    instruccion1;
+    actualizacion_contador;  <span class="cm">// ¡no olvidar!</span>
+}</pre>
+    <div class="warn">La variable de control debe: (1) inicializarse ANTES del while, (2) comprobarse en la condición, (3) actualizarse DENTRO. Si se olvida actualizar → bucle INFINITO.</div>
+    <pre><span class="cm">// Validar entrada: solo acepta valor positivo</span>
+<span class="type">int</span> a = <span class="num">0</span>;
+<span class="kw">while</span> (a &lt;= <span class="num">0</span>)
+{
+    <span class="fn">printf</span>(<span class="str">"Ingrese valor positivo: "</span>);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &a);
+}</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title red">DO-WHILE — Mínimo 1 ejecución</div>
+    <p>Evalúa condición <strong>DESPUÉS</strong>. El cuerpo se ejecuta <strong>siempre al menos una vez</strong>.</p>
+    <pre><span class="kw">do</span>
+{
+    instruccion1;
+    actualizacion;
+} <span class="kw">while</span> (condicion);   <span class="cm">// ← punto y coma OBLIGATORIO</span></pre>
+    <div class="warn">El punto y coma final en <code>while(cond);</code> es OBLIGATORIO. Es error muy común olvidarlo.</div>
+    <pre><span class="cm">// Validar con do-while (menús, validaciones)</span>
+<span class="type">int</span> a;
+<span class="kw">do</span>
+{
+    <span class="fn">printf</span>(<span class="str">"Ingrese valor positivo: "</span>);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &a);
+} <span class="kw">while</span> (a &lt;= <span class="num">0</span>);</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Contador vs Acumulador</div>
+    <div class="grid-2">
+      <div class="def"><strong>Contador:</strong> se incrementa en cantidad CONSTANTE.<br><code>contador++;</code> o <code>contador = contador + 1;</code></div>
+      <div class="def yellow"><strong>Acumulador:</strong> se incrementa en cantidad VARIABLE (depende de un dato).<br><code>suma = suma + numero;</code></div>
+    </div>
+    <div class="tip">Todo contador/acumulador debe inicializarse en 0 ANTES del bucle y actualizarse DENTRO.</div>
+  </div>
+</div>
+
+
+<!-- ===================== SINTAXIS C ===================== -->
+<div class="section" id="sintaxis">
+  <div class="section-title"><span>⚙️</span> Sintaxis C — Referencia Rápida</div>
+
+  <div class="card">
+    <div class="card-title">Estructura mínima de un programa C</div>
+    <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+
+<span class="type">int</span> <span class="fn">main</span>()
+{
+    <span class="fn">printf</span>(<span class="str">"Mi primer programa\n"</span>);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+    <table style="margin-top:0.7rem">
+      <tr><th>Elemento</th><th>Descripción</th></tr>
+      <tr><td><code>#include &lt;stdio.h&gt;</code></td><td>Incluye funciones de E/S (printf, scanf, etc.)</td></tr>
+      <tr><td><code>int main()</code></td><td>Función principal. Todo programa inicia aquí.</td></tr>
+      <tr><td><code>{ }</code></td><td>Delimitan el cuerpo de una función.</td></tr>
+      <tr><td><code>;</code></td><td>Obligatorio al final de cada sentencia.</td></tr>
+      <tr><td><code>return 0;</code></td><td>Finaliza main y devuelve el control al SO.</td></tr>
+      <tr><td><code>// comentario</code></td><td>Comentario de una línea.</td></tr>
+      <tr><td><code>/* comentario */</code></td><td>Comentario de bloque (varias líneas).</td></tr>
+    </table>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">printf() — salida</div>
+      <pre><span class="fn">printf</span>(<span class="str">"cadena de control"</span>, args);</pre>
+      <table>
+        <tr><th>Formateador</th><th>Tipo</th></tr>
+        <tr><td><code>%d</code></td><td>Entero decimal</td></tr>
+        <tr><td><code>%f</code></td><td>Float</td></tr>
+        <tr><td><code>%c</code></td><td>Carácter</td></tr>
+        <tr><td><code>%s</code></td><td>String</td></tr>
+        <tr><td><code>%ld</code></td><td>Entero largo</td></tr>
+        <tr><td><code>%.2f</code></td><td>Float con 2 decimales</td></tr>
+      </table>
+      <hr class="divider">
+      <div class="card-title" style="font-size:0.7rem;margin-bottom:0.4rem">Secuencias de escape</div>
+      <table>
+        <tr><td><code>\n</code></td><td>Nueva línea</td></tr>
+        <tr><td><code>\t</code></td><td>Tabulación</td></tr>
+        <tr><td><code>\\</code></td><td>Barra invertida</td></tr>
+        <tr><td><code>\"</code></td><td>Comilla doble</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title purple">scanf() — entrada</div>
+      <pre><span class="fn">scanf</span>(<span class="str">"cadena de control"</span>, &variable);</pre>
+      <div class="warn" style="font-size:0.78rem">El <code>&</code> es OBLIGATORIO: indica la dirección de memoria donde guardar el valor.</div>
+      <pre><span class="type">float</span> x;  <span class="type">int</span> k;
+<span class="fn">scanf</span>(<span class="str">"%f"</span>, &x);
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &k);
+<span class="fn">printf</span>(<span class="str">"%.2f %d"</span>, x, k);</pre>
+      <hr class="divider">
+      <div class="card-title" style="font-size:0.7rem;margin-bottom:0.4rem">Librerías útiles</div>
+      <table>
+        <tr><td><code>&lt;stdio.h&gt;</code></td><td>printf, scanf, getchar…</td></tr>
+        <tr><td><code>&lt;math.h&gt;</code></td><td>sqrt, pow, sin, cos…</td></tr>
+        <tr><td><code>&lt;string.h&gt;</code></td><td>Manipulación de cadenas</td></tr>
+        <tr><td><code>&lt;ctype.h&gt;</code></td><td>Clasificar/convertir caracteres</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Variables y Declaración</div>
+    <pre><span class="type">int</span> x;           <span class="cm">// declaración</span>
+x = <span class="num">1</span>;           <span class="cm">// asignación</span>
+<span class="type">int</span> y = <span class="num">5</span>;       <span class="cm">// declaración + asignación</span>
+<span class="type">float</span> precio;
+<span class="type">char</span> letra = <span class="str">'a'</span>;
+<span class="type">double</span> resultado;</pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title">++i vs i++ (importante)</div>
+    <div class="grid-2">
+      <div class="def yellow"><strong>++i (pre-incremento):</strong> el valor se modifica ANTES de usarlo en la expresión.</div>
+      <div class="def purple"><strong>i++ (post-incremento):</strong> el valor se modifica DESPUÉS de usarlo en la expresión.</div>
+    </div>
+    <pre><span class="type">int</span> i = <span class="num">5</span>;
+<span class="fn">printf</span>(<span class="str">"%d"</span>, ++i);  <span class="cm">// imprime 6, i queda en 6</span>
+<span class="fn">printf</span>(<span class="str">"%d"</span>, i++);  <span class="cm">// imprime 6, i queda en 7</span></pre>
+  </div>
+
+  <div class="card">
+    <div class="card-title red">Paso de Parámetros</div>
+    <table>
+      <tr><th class="red">Tipo</th><th class="red">Descripción</th><th class="red">¿Modifica el original?</th></tr>
+      <tr><td>Por valor</td><td>La función recibe una COPIA del argumento</td><td class="highlight-red">NO</td></tr>
+      <tr><td>Por referencia</td><td>La función recibe la DIRECCIÓN de memoria (puntero)</td><td class="highlight-green">SÍ</td></tr>
+    </table>
+    <div class="tip">Si una función debe devolver más de un valor → usar paso por referencia.</div>
+  </div>
+</div>
+
+
+<!-- ===================== TABLAS RÁPIDAS ===================== -->
+<div class="section" id="tablas">
+  <div class="section-title"><span>📊</span> Tablas Rápidas — Comparaciones</div>
+
+  <div class="card">
+    <div class="card-title">Comparativa de Bucles</div>
+    <table>
+      <tr><th>Bucle</th><th>¿Cuándo usarlo?</th><th>Evalúa condición</th><th>Mín. ejecuciones</th></tr>
+      <tr><td><strong>FOR</strong></td><td>Repeticiones FIJAS conocidas de antemano</td><td>ANTES</td><td>0 (si cond. falsa)</td></tr>
+      <tr><td><strong>WHILE</strong></td><td>Repeticiones desconocidas; depende de condición</td><td>ANTES</td><td>0 (puede no ejecutarse)</td></tr>
+      <tr><td><strong>DO-WHILE</strong></td><td>Igual que WHILE pero con garantía de 1 ejecución</td><td>DESPUÉS</td><td><strong>1 siempre</strong></td></tr>
+    </table>
+    <div class="tip">Regla rápida: ¿Sabés cuántas veces? → FOR. ¿No sabés? → WHILE. ¿Necesitás que se ejecute al menos una vez (menú, validación)? → DO-WHILE.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Tabla de Verdad — Operadores Lógicos</div>
+    <table>
+      <tr><th>a</th><th>b</th><th>a && b (AND)</th><th>a || b (OR)</th><th>!a (NOT)</th></tr>
+      <tr><td>V (1)</td><td>V (1)</td><td class="highlight-green">V (1)</td><td class="highlight-green">V (1)</td><td class="highlight-red">F (0)</td></tr>
+      <tr><td>V (1)</td><td>F (0)</td><td class="highlight-red">F (0)</td><td class="highlight-green">V (1)</td><td class="highlight-red">F (0)</td></tr>
+      <tr><td>F (0)</td><td>V (1)</td><td class="highlight-red">F (0)</td><td class="highlight-green">V (1)</td><td class="highlight-green">V (1)</td></tr>
+      <tr><td>F (0)</td><td>F (0)</td><td class="highlight-red">F (0)</td><td class="highlight-red">F (0)</td><td class="highlight-green">V (1)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title">IF vs SWITCH</div>
+    <table>
+      <tr><th></th><th>IF</th><th>SWITCH</th></tr>
+      <tr><td>Tipo de comparación</td><td>Cualquiera (==, >, &lt;, >=, &lt;=)</td><td>Solo igualdad (==)</td></tr>
+      <tr><td>Tipo de datos</td><td>Cualquier tipo</td><td>Solo <code>int</code> o <code>char</code></td></tr>
+      <tr><td>Rangos</td><td>✅ Sí</td><td>❌ No</td></tr>
+      <tr><td>Mejor para</td><td>Condiciones complejas, rangos</td><td>Muchos valores exactos (menús)</td></tr>
+      <tr><td>break necesario</td><td>No</td><td>Sí (por cada case)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title yellow">Estructuras de Datos — Resumen</div>
+    <table>
+      <tr><th class="yellow">Estructura</th><th class="yellow">Tipo</th><th class="yellow">Característica clave</th></tr>
+      <tr><td>Entero, Real, Char, Bool</td><td>Estática Primitiva</td><td>Tipos básicos de datos</td></tr>
+      <tr><td>Arreglo</td><td>Estática Compuesta</td><td>Colección finita, homogénea, ordenada</td></tr>
+      <tr><td>String</td><td>Estática Compuesta</td><td>Secuencia de caracteres</td></tr>
+      <tr><td>Archivo</td><td>Estática Compuesta</td><td>Datos permanentes en disco</td></tr>
+      <tr><td>Lista enlazada</td><td>Dinámica Lineal</td><td>Nodos con dato + enlace al siguiente</td></tr>
+      <tr><td>Pila (Stack)</td><td>Dinámica Lineal</td><td><strong>LIFO</strong>: último en entrar, primero en salir</td></tr>
+      <tr><td>Cola (Queue)</td><td>Dinámica Lineal</td><td><strong>FIFO</strong>: primero en entrar, primero en salir</td></tr>
+      <tr><td>Árbol</td><td>Dinámica No Lineal</td><td>Jerárquico: 1 antecesor, varios sucesores</td></tr>
+      <tr><td>Grafo</td><td>Dinámica No Lineal</td><td>Nodos + aristas, sin restricciones</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title red">Errores más comunes en C ⚠</div>
+    <table>
+      <tr><th class="red">Error</th><th class="red">Detalle</th></tr>
+      <tr><td>Usar <code>=</code> en vez de <code>==</code></td><td>En condiciones de if/while usar == para comparar, no =</td></tr>
+      <tr><td>Olvidar <code>&</code> en scanf</td><td><code>scanf("%d", &variable)</code> — el & es obligatorio</td></tr>
+      <tr><td>Olvidar <code>break</code> en switch</td><td>Sin break, cae al siguiente case aunque no coincida</td></tr>
+      <tr><td>Olvidar <code>;</code> en do-while</td><td><code>} while(cond);</code> — el punto y coma es obligatorio</td></tr>
+      <tr><td>No inicializar contador/acumulador</td><td>Siempre inicializar en 0 antes del bucle</td></tr>
+      <tr><td>Olvidar actualizar en while</td><td>Si no se actualiza la variable de control → bucle infinito</td></tr>
+      <tr><td>No usar llaves { } en if/else</td><td>Sin llaves, solo la primera instrucción pertenece al bloque</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===================== EJEMPLOS ===================== -->
+<div class="section" id="ejemplos">
+  <div class="section-title"><span>💻</span> Ejemplos de Código</div>
+
+  <!-- IF SIMPLE -->
+  <div class="card">
+    <div class="card-title">IF Simple — 3 ejemplos</div>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem">Ejemplo 1 — verificar si un número es positivo</p>
+    <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">int</span> num;
+    <span class="fn">printf</span>(<span class="str">"Ingrese un numero: "</span>);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &num);
+    <span class="kw">if</span> (num > <span class="num">0</span>)
+        <span class="fn">printf</span>(<span class="str">"%d es POSITIVO\n"</span>, num);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 2 — verificar si un número es par</p>
+    <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">int</span> num;
+    <span class="fn">printf</span>(<span class="str">"Ingrese un numero: "</span>);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &num);
+    <span class="kw">if</span> (num % <span class="num">2</span> == <span class="num">0</span>)
+        <span class="fn">printf</span>(<span class="str">"%d es PAR\n"</span>, num);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 3 — verificar si un alumno aprobó (nota >= 6)</p>
+    <pre><span class="kw">#include</span> &lt;stdio.h&gt;
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">float</span> nota;
+    <span class="fn">printf</span>(<span class="str">"Ingrese la nota: "</span>);
+    <span class="fn">scanf</span>(<span class="str">"%f"</span>, &nota);
+    <span class="kw">if</span> (nota >= <span class="num">6</span>)
+        <span class="fn">printf</span>(<span class="str">"APROBADO con %.1f\n"</span>, nota);
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+  </div>
+
+  <!-- IF ELSE -->
+  <div class="card">
+    <div class="card-title purple">IF–ELSE — 3 ejemplos</div>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem">Ejemplo 1 — positivo o negativo/cero</p>
+    <pre><span class="type">int</span> num;
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &num);
+<span class="kw">if</span> (num > <span class="num">0</span>)
+    <span class="fn">printf</span>(<span class="str">"POSITIVO\n"</span>);
+<span class="kw">else</span>
+    <span class="fn">printf</span>(<span class="str">"NEGATIVO o CERO\n"</span>);</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 2 — par o impar</p>
+    <pre><span class="type">int</span> num;
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &num);
+<span class="kw">if</span> (num % <span class="num">2</span> == <span class="num">0</span>)
+    <span class="fn">printf</span>(<span class="str">"%d es PAR\n"</span>, num);
+<span class="kw">else</span>
+    <span class="fn">printf</span>(<span class="str">"%d es IMPAR\n"</span>, num);</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 3 — salario normal o con horas extra</p>
+    <pre><span class="type">float</span> horas, precio_hora, salario;
+<span class="fn">scanf</span>(<span class="str">"%f %f"</span>, &horas, &precio_hora);
+<span class="kw">if</span> (horas &lt;= <span class="num">40</span>)
+    salario = horas * precio_hora;
+<span class="kw">else</span>
+    salario = <span class="num">40</span>*precio_hora + <span class="num">1.5</span>*precio_hora*(horas-<span class="num">40</span>);
+<span class="fn">printf</span>(<span class="str">"Salario: %.2f\n"</span>, salario);</pre>
+  </div>
+
+  <!-- IF ANIDADO -->
+  <div class="card">
+    <div class="card-title yellow">IF Anidado (else if) — 3 ejemplos</div>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem">Ejemplo 1 — positivo, cero o negativo</p>
+    <pre><span class="type">int</span> num;
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &num);
+<span class="kw">if</span> (num > <span class="num">0</span>)
+    <span class="fn">printf</span>(<span class="str">"POSITIVO\n"</span>);
+<span class="kw">else if</span> (num == <span class="num">0</span>)
+    <span class="fn">printf</span>(<span class="str">"CERO\n"</span>);
+<span class="kw">else</span>
+    <span class="fn">printf</span>(<span class="str">"NEGATIVO\n"</span>);</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 2 — saludo según hora del día</p>
+    <pre><span class="type">int</span> hora;
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &hora);
+<span class="kw">if</span> (hora >= <span class="num">0</span> && hora &lt; <span class="num">12</span>)
+    <span class="fn">printf</span>(<span class="str">"Buenos dias\n"</span>);
+<span class="kw">else if</span> (hora >= <span class="num">12</span> && hora &lt; <span class="num">18</span>)
+    <span class="fn">printf</span>(<span class="str">"Buenas tardes\n"</span>);
+<span class="kw">else if</span> (hora >= <span class="num">18</span> && hora &lt; <span class="num">24</span>)
+    <span class="fn">printf</span>(<span class="str">"Buenas noches\n"</span>);
+<span class="kw">else</span>
+    <span class="fn">printf</span>(<span class="str">"Hora no valida\n"</span>);</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 3 — mayor de tres números</p>
+    <pre><span class="type">int</span> a, b, c, mayor;
+<span class="fn">scanf</span>(<span class="str">"%d %d %d"</span>, &a, &b, &c);
+<span class="kw">if</span> (a > b)
+{
+    <span class="kw">if</span> (a > c) mayor = a;
+    <span class="kw">else</span>       mayor = c;
+}
+<span class="kw">else</span>
+{
+    <span class="kw">if</span> (b > c) mayor = b;
+    <span class="kw">else</span>       mayor = c;
+}
+<span class="fn">printf</span>(<span class="str">"El mayor es %d\n"</span>, mayor);</pre>
+  </div>
+
+  <!-- SWITCH -->
+  <div class="card">
+    <div class="card-title red">SWITCH — 3 ejemplos</div>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem">Ejemplo 1 — días de la semana</p>
+    <pre><span class="type">int</span> dia;
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &dia);
+<span class="kw">switch</span>(dia)
+{
+    <span class="kw">case</span> <span class="num">1</span>: <span class="fn">printf</span>(<span class="str">"Lunes\n"</span>);     <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">2</span>: <span class="fn">printf</span>(<span class="str">"Martes\n"</span>);    <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">3</span>: <span class="fn">printf</span>(<span class="str">"Miercoles\n"</span>); <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">4</span>: <span class="fn">printf</span>(<span class="str">"Jueves\n"</span>);    <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">5</span>: <span class="fn">printf</span>(<span class="str">"Viernes\n"</span>);   <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">6</span>: <span class="fn">printf</span>(<span class="str">"Sabado\n"</span>);    <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">7</span>: <span class="fn">printf</span>(<span class="str">"Domingo\n"</span>);   <span class="kw">break</span>;
+    <span class="kw">default</span>: <span class="fn">printf</span>(<span class="str">"Dia invalido\n"</span>); <span class="kw">break</span>;
+}</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 2 — detectar vocales</p>
+    <pre><span class="type">char</span> car;
+<span class="fn">scanf</span>(<span class="str">" %c"</span>, &car);
+<span class="kw">switch</span>(car)
+{
+    <span class="kw">case</span> <span class="str">'a'</span>: <span class="fn">printf</span>(<span class="str">"Vocal a\n"</span>); <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'e'</span>: <span class="fn">printf</span>(<span class="str">"Vocal e\n"</span>); <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'i'</span>: <span class="fn">printf</span>(<span class="str">"Vocal i\n"</span>); <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'o'</span>: <span class="fn">printf</span>(<span class="str">"Vocal o\n"</span>); <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'u'</span>: <span class="fn">printf</span>(<span class="str">"Vocal u\n"</span>); <span class="kw">break</span>;
+    <span class="kw">default</span>:  <span class="fn">printf</span>(<span class="str">"No es vocal\n"</span>); <span class="kw">break</span>;
+}</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 3 — precio según sector de estadio</p>
+    <pre><span class="type">char</span> sector; <span class="type">int</span> cantidad; <span class="type">float</span> precio, total;
+<span class="fn">scanf</span>(<span class="str">" %c"</span>, &sector);
+<span class="kw">switch</span>(sector)
+{
+    <span class="kw">case</span> <span class="str">'A'</span>: precio = <span class="num">3</span>;  <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'B'</span>: precio = <span class="num">5</span>;  <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="str">'C'</span>: precio = <span class="num">8</span>;  <span class="kw">break</span>;
+    <span class="kw">default</span>: <span class="fn">printf</span>(<span class="str">"Sector invalido\n"</span>); <span class="kw">return</span> <span class="num">0</span>;
+}
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &cantidad);
+total = precio * cantidad;
+<span class="fn">printf</span>(<span class="str">"Total: $%.2f\n"</span>, total);</pre>
+  </div>
+
+  <!-- FOR -->
+  <div class="card">
+    <div class="card-title">FOR — 3 ejemplos</div>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem">Ejemplo 1 — tabla de multiplicar</p>
+    <pre><span class="type">int</span> a, b, c;
+<span class="fn">printf</span>(<span class="str">"Introduce un numero: "</span>);
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &a);
+<span class="kw">for</span> (b = <span class="num">1</span>; b &lt;= <span class="num">10</span>; b++)
+{
+    c = a * b;
+    <span class="fn">printf</span>(<span class="str">"%d x %d = %d\n"</span>, a, b, c);
+}</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 2 — sumar N números ingresados por el usuario</p>
+    <pre><span class="type">int</span> i, n, num, suma = <span class="num">0</span>;
+<span class="fn">printf</span>(<span class="str">"Cuantos numeros? "</span>);
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &n);
+<span class="kw">for</span> (i = <span class="num">1</span>; i &lt;= n; i++)
+{
+    <span class="fn">printf</span>(<span class="str">"Numero %d: "</span>, i);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &num);
+    suma = suma + num;
+}
+<span class="fn">printf</span>(<span class="str">"Suma total: %d\n"</span>, suma);</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 3 — números pares de 50 a 20 (decremento)</p>
+    <pre><span class="type">int</span> i, contador = <span class="num">0</span>;
+<span class="kw">for</span> (i = <span class="num">50</span>; i >= <span class="num">20</span>; i -= <span class="num">2</span>)
+{
+    <span class="fn">printf</span>(<span class="str">"%d\n"</span>, i);
+    contador++;
+}
+<span class="fn">printf</span>(<span class="str">"Cantidad de pares: %d\n"</span>, contador);</pre>
+  </div>
+
+  <!-- WHILE -->
+  <div class="card">
+    <div class="card-title purple">WHILE — 3 ejemplos</div>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem">Ejemplo 1 — sumar 3 números con acumulador</p>
+    <pre><span class="type">int</span> cont = <span class="num">0</span>, acum = <span class="num">0</span>, a;
+<span class="kw">while</span> (cont &lt; <span class="num">3</span>)
+{
+    <span class="fn">printf</span>(<span class="str">"Ingrese un valor: "</span>);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &a);
+    acum = acum + a;
+    cont++;
+}
+<span class="fn">printf</span>(<span class="str">"Suma total: %d\n"</span>, acum);</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 2 — validar entrada (solo acepta positivos)</p>
+    <pre><span class="type">int</span> a = <span class="num">0</span>;
+<span class="kw">while</span> (a &lt;= <span class="num">0</span>)
+{
+    <span class="fn">printf</span>(<span class="str">"Ingrese un valor positivo: "</span>);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &a);
+}
+<span class="fn">printf</span>(<span class="str">"Valor aceptado: %d\n"</span>, a);</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 3 — contar cuántos números pares ingresó el usuario</p>
+    <pre><span class="type">int</span> num, c = <span class="num">1</span>, pares = <span class="num">0</span>, n;
+<span class="fn">printf</span>(<span class="str">"Cuantos numeros vas a ingresar? "</span>);
+<span class="fn">scanf</span>(<span class="str">"%d"</span>, &n);
+<span class="kw">while</span> (c &lt;= n)
+{
+    <span class="fn">printf</span>(<span class="str">"Numero %d: "</span>, c);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &num);
+    <span class="kw">if</span> (num % <span class="num">2</span> == <span class="num">0</span>)
+        pares++;
+    c++;
+}
+<span class="fn">printf</span>(<span class="str">"Numeros pares ingresados: %d\n"</span>, pares);</pre>
+  </div>
+
+  <!-- DO-WHILE -->
+  <div class="card">
+    <div class="card-title red">DO-WHILE — 3 ejemplos</div>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem">Ejemplo 1 — imprimir números del 1 al 10</p>
+    <pre><span class="type">int</span> numero = <span class="num">1</span>;
+<span class="kw">do</span>
+{
+    <span class="fn">printf</span>(<span class="str">"%d\n"</span>, numero);
+    numero++;
+} <span class="kw">while</span> (numero &lt;= <span class="num">10</span>);</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 2 — validar entrada y calcular perímetro</p>
+    <pre><span class="type">int</span> a, p;
+<span class="kw">do</span>
+{
+    <span class="fn">printf</span>(<span class="str">"Ingrese un valor positivo: "</span>);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &a);
+} <span class="kw">while</span> (a &lt;= <span class="num">0</span>);
+p = a * <span class="num">4</span>;
+<span class="fn">printf</span>(<span class="str">"Perimetro = %d\n"</span>, p);</pre>
+
+    <p style="font-size:0.8rem;color:var(--muted);margin:0.7rem 0 0.4rem">Ejemplo 3 — ingresar 3 números con do-while</p>
+    <pre><span class="type">int</span> cont = <span class="num">0</span>, a;
+<span class="kw">do</span>
+{
+    <span class="fn">printf</span>(<span class="str">"Ingrese un numero: "</span>);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, &a);
+    <span class="fn">printf</span>(<span class="str">"Numero ingresado: %d\n"</span>, a);
+    cont++;
+} <span class="kw">while</span> (cont &lt; <span class="num">3</span>);</pre>
+  </div>
+
+</div>
+
+</div><!-- /container -->
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
